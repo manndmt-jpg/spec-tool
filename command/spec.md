@@ -6,7 +6,38 @@ Manage Linear tickets and validate against Notion specs.
 
 **Before showing options**, check for `./config.json` in current directory:
 
-**If config.json missing:** Error - "No config.json found. Copy config.example.json from spec-tool and fill in your IDs."
+**If config.json missing:** Run interactive setup:
+
+```
+No config.json found. Let's set up your workspace.
+
+1. Team/Project name?
+   (e.g., "RenisaAI", "MyProject")
+
+2. Linear team ID?
+   → Open Linear → Team Settings → copy ID from URL
+   → URL looks like: linear.app/team/TEAM_ID/settings
+   → Example: abba2c0d-256b-4a83-bb38-77b86f468f5f
+
+3. Notion database ID?
+   → Open your specs database in Notion
+   → Copy ID from URL (32 chars before ?v=)
+   → URL looks like: notion.so/WORKSPACE/DATABASE_ID?v=...
+   → Example: 28ddf45b-20fd-805a-bee6-c85c56ff9deb
+
+(Leave Notion ID blank if not using specs database)
+```
+
+After collecting answers, create `config.json`:
+```json
+{
+  "linearTeamId": "[user's Linear team ID]",
+  "notionDatabaseId": "[user's Notion database ID or empty string]",
+  "teamName": "[user's team name]"
+}
+```
+
+Then say: "Created config.json. Continuing setup..."
 
 **If config.json exists:** Read it to get:
 - `linearTeamId` - Linear team to query

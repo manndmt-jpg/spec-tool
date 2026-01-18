@@ -2,6 +2,14 @@
 
 A Claude Code command and MCP server for managing Linear tickets and Notion specs together.
 
+## Quick Start
+
+**Joining an existing team?** Ask your team lead for the config repo URL, then see [Team Setup](#team-setup).
+
+**Setting up for yourself/new team?** Follow [Full Setup](#setup) below.
+
+---
+
 ## What It Does
 
 **Two-way sync between tickets and specs:**
@@ -95,7 +103,35 @@ Run `/spec` from your config folder.
 
 ---
 
-## Team Usage
+## Team Setup
+
+**For teammates joining an existing team** (faster path):
+
+```bash
+# 1. Clone the public tool
+git clone https://github.com/YOUR_ORG/spec-tool
+cd spec-tool/mcp-server && npm install && npm run build
+
+# 2. Add MCP server to Claude (get API keys from team lead)
+claude mcp add spec-tool node $(pwd)/dist/index.js \
+  -e "LINEAR_API_KEY=xxx" \
+  -e "NOTION_API_KEY=xxx"
+
+# 3. Install command
+cp ../command/spec.md ~/.claude/commands/
+
+# 4. Clone your team's config repo
+cd ~
+git clone https://github.com/YOUR_ORG/your-team-config
+
+# 5. Restart Claude Code, then:
+cd your-team-config
+/spec
+```
+
+---
+
+## Team Admin: Creating a Config Repo
 
 For teams, create a **private repo** with your config:
 
