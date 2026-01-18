@@ -1,20 +1,59 @@
 # Spec Tool
 
-Manage Linear tickets and Notion specs from Claude Code.
+A Claude Code command and MCP server for managing Linear tickets and Notion specs together.
 
-## Setup (5 steps)
+## What It Does
+
+**Two-way sync between tickets and specs:**
+
+```
+/spec
+
+Work on:
+1. Tickets - Manage Linear tickets
+2. Specs - Manage Notion specifications
+```
+
+### Tickets Menu
+
+| Action | Description |
+|--------|-------------|
+| **Refine** | Format tickets to a standard structure (Context → Specs → Acceptance Criteria). Choose detail level: minimal, standard, or extensive. |
+| **Review** | View a ticket with comments, update description/priority/estimate. |
+| **Validate** | Compare a ticket against its Notion spec. Find gaps, missing requirements, suggested acceptance criteria. |
+| **Status** | Overview of all tickets by state (In Progress, Testing, Todo, Backlog). |
+
+### Specs Menu
+
+| Action | Description |
+|--------|-------------|
+| **Browse** | List all specs in your Notion database. |
+| **Review** | View a spec and find related tickets. |
+| **Update** | Suggest spec improvements based on learnings from tickets. |
+| **Gap Analysis** | Find tickets without specs, and specs without recent tickets. |
+
+### Project Context
+
+The tool creates `TICKET_SCOPE.md` in your working directory to track:
+- What this project/codebase handles
+- History of all ticket operations (refined, validated, reviewed)
+- Related specs
+
+This context persists across sessions and can be shared with teammates.
+
+---
+
+## Setup
 
 ### 1. Get API Keys
 
 **Linear:**
-1. Go to linear.app
-2. Settings → Account → Security & Access
-3. Create Personal API key, copy it
+1. Go to linear.app → Settings → Account → Security & Access
+2. Create Personal API key
 
 **Notion:**
-1. Go to notion.so/my-integrations
-2. Create new integration, copy the secret
-3. In Notion, share your workspace with the integration (page → ... → Connections → Add)
+1. Go to notion.so/my-integrations → Create integration
+2. Share your specs database with the integration (database → ... → Connections)
 
 ### 2. Build MCP Server
 
@@ -40,14 +79,8 @@ cp command/spec.md ~/.claude/commands/
 
 ### 5. Create Config
 
-Create a folder for your team config (or clone your team's private config repo):
+Create a folder with `config.json`:
 
-```bash
-mkdir my-team-config
-cd my-team-config
-```
-
-Create `config.json`:
 ```json
 {
   "linearTeamId": "your-linear-team-id",
@@ -58,69 +91,64 @@ Create `config.json`:
 
 ### 6. Restart Claude Code
 
-Done. Run `/spec` from your config folder.
+Run `/spec` from your config folder.
 
 ---
 
-## Usage
+## Team Usage
 
-```bash
-cd my-team-config   # or your team's config repo
-/spec
-```
+For teams, create a **private repo** with your config:
 
 ```
-Work on:
-1. Tickets - Manage Linear tickets
-2. Specs - Manage Notion specifications
+your-team-config/
+├── config.json         # Team's Linear/Notion IDs
+├── TICKET_SCOPE.md     # Shared history (created by /spec)
+└── README.md           # Team setup notes
 ```
 
-On first run, creates `TICKET_SCOPE.md` to track context and history.
-
----
-
-## Team Setup
-
-For teams, create a **private repo** with:
-- `config.json` - Your team's Linear/Notion IDs
-- `TICKET_SCOPE.md` - Shared ticket history (created by /spec)
-- `README.md` - Team-specific notes
-
-Team members:
-1. Clone public spec-tool, install (steps 1-4 above)
-2. Clone private team config repo
-3. Run `/spec` from team config folder
+Teammates clone this repo and run `/spec` from there. Commit `TICKET_SCOPE.md` to share context.
 
 ---
 
 ## Finding Your IDs
 
 **Linear Team ID:**
-1. Go to your team in Linear
-2. Team Settings → look at URL: `linear.app/team/TEAM_ID/settings`
+- Team Settings → URL shows: `linear.app/team/TEAM_ID/settings`
 
 **Notion Database ID:**
-1. Open your specs database in Notion
-2. Copy URL: `notion.so/WORKSPACE/DATABASE_ID?v=...`
-3. The ID is the 32-character string before `?v=`
+- Open database → URL shows: `notion.so/WORKSPACE/DATABASE_ID?v=...`
+- Copy the 32-character ID before `?v=`
 
 ---
 
-## Project Structure
+## Ticket Format
 
-```
-spec-tool/              ← PUBLIC (this repo)
-├── command/
-│   └── spec.md         # The /spec command
-├── mcp-server/         # MCP server for Linear + Notion
-├── config.example.json # Template for config
-└── README.md
+Refined tickets follow this structure:
 
-your-team-config/       ← PRIVATE (your team's repo)
-├── config.json         # Your IDs
-├── TICKET_SCOPE.md     # History (created by /spec)
-└── README.md
+```markdown
+## Context
+[Why this ticket exists - 1-3 sentences]
+
+## Specifications
+1. [What needs to be done]
+
+## Acceptance Criteria
+- [ ] [How we know it's done]
+
+---
+**References**: [Links to specs, designs]
 ```
+
+---
+
+## MCP Tools
+
+| Tool | Description |
+|------|-------------|
+| `linear_list_issues` | List issues from a team |
+| `linear_get_issue` | Get issue with full details and comments |
+| `linear_update_issue` | Update description, priority, or estimate |
+| `notion_get_page` | Get Notion page content |
 
 ---
 
