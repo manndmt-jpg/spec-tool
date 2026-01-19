@@ -215,7 +215,7 @@ Then:
 Ask: "Ticket ID?" (e.g., REN-123)
 
 Then:
-1. Fetch ticket via `linear_get_issue`
+1. Fetch ticket with comments via `linear_get_issue`
 2. Check if ticket already links to a Notion spec
 3. If no link, search Product specs database for matching spec:
    - Query database: `POST /databases/{notionDatabaseId}/query`
@@ -225,6 +225,7 @@ Then:
 5. Compare and report:
    - Requirements in spec missing from ticket
    - Ticket scope vs spec scope alignment
+   - Context from ticket comments (scope changes, clarifications, decisions)
    - Suggested acceptance criteria from spec
    - Missing edge cases or scenarios
 6. Ask: "Update ticket with findings? (y/n)"
