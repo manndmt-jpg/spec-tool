@@ -183,13 +183,34 @@ Then ask: "Detail level?"
 ```
 
 Then for each ticket:
-1. Fetch ticket with comments using MCP tool `linear_get_issue`
-2. Analyze title + description + comments
-3. Check if ticket references a Notion spec - if so, fetch it
-4. Draft new description using selected style
-5. Show draft to user, ask "Push to Linear? (y/n/edit)"
-6. If yes, update via `linear_update_issue`
-7. Move to next ticket
+
+**1. Gather context from all sources:**
+   - Fetch ticket with comments via `linear_get_issue`
+   - Read TICKET_SCOPE.md for project context and Related Specs list
+   - Search for matching Notion spec:
+     - First check if ticket matches any spec in Related Specs list
+     - If not, search Notion database by keywords from title
+   - If potential spec found, validate relevance:
+     - Does spec topic match ticket scope?
+     - If unclear, ask: "Found spec [X] - use for context? (y/n)"
+
+**2. Draft new description using selected style:**
+   - Use available context (TICKET_SCOPE, Notion spec, comments)
+   - AI adds/infers where gaps exist:
+     - Business context if not explicit (infer from title + project context)
+     - Logical acceptance criteria based on work type
+     - Related edge cases based on feature domain
+     - Error states and validation needs
+     - Connections to related functionality
+   - Link to Notion spec in References if used
+
+**3. Review and apply:**
+   - Show draft to user, ask "Push to Linear? (y/n/edit)"
+   - If yes, update via `linear_update_issue`
+   - If new spec was used, add to TICKET_SCOPE.md Related Specs list
+   - Log to TICKET_SCOPE.md History: `**XXX-123** - Refined`
+
+**4. Move to next ticket**
 
 ---
 
