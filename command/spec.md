@@ -65,6 +65,9 @@ Then create `TICKET_SCOPE.md`:
 ## Related Specs
 [Will be populated as tickets are validated]
 
+## Domain Knowledge
+[Auto-populated as tickets are refined/validated - captures learnings about the project]
+
 ---
 
 ## History
@@ -73,10 +76,32 @@ Then create `TICKET_SCOPE.md`:
 [Will be populated as tickets are worked on]
 ```
 
-**After each operation**, append to History section:
-- `**REN-XXX** - Refined - [ticket title]`
-- `**REN-XXX** - Validated - [linked spec name]`
-- `**REN-XXX** - Reviewed - [what was viewed/changed]`
+**After each operation:**
+
+1. **Log to History section:**
+   - `**REN-XXX** - Refined - [ticket title]`
+   - `**REN-XXX** - Validated - [linked spec name]`
+   - `**REN-XXX** - Summarized - [ticket title]`
+
+2. **Update Domain Knowledge** if new insights were learned:
+   - Technical constraints (e.g., "don't modify system instructions - changes monitoring hash")
+   - Architecture decisions (e.g., "use preprocessor for dynamic context injection")
+   - Domain rules (e.g., "FNOL requires X before Y")
+   - Integration notes (e.g., "Claims API uses webhook for status updates")
+
+   Organize by feature/domain area:
+   ```markdown
+   ## Domain Knowledge
+
+   ### Agents
+   - Use preprocessor for dynamic context, not system instructions (monitoring hash)
+
+   ### FNOL
+   - [learnings from FNOL tickets/specs]
+
+   ### Claims
+   - [learnings from Claims tickets/specs]
+   ```
 
 ---
 
