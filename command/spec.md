@@ -79,7 +79,7 @@ Then create `TICKET_SCOPE.md`:
 **After each operation:**
 
 1. **Log to History section:**
-   - `**REN-XXX** - Refined - [ticket title]`
+   - `**REN-XXX** - Refined (confidence: Low/Medium/High) - [ticket title]`
    - `**REN-XXX** - Validated - [linked spec name]`
    - `**REN-XXX** - Summarized - [ticket title]`
 
@@ -219,6 +219,12 @@ Then for each ticket:
      - Does spec topic match ticket scope?
      - If unclear, ask: "Found spec [X] - use for context? (y/n)"
 
+**1b. Assess confidence level:**
+   Based on available context, determine confidence:
+   - **High**: Has Notion spec + comments + existing description
+   - **Medium**: Has at least one of: Notion spec, comments, or substantive description
+   - **Low**: Title only, no spec, no comments, empty/minimal description
+
 **2. Analyze title for issues:**
    - Check for: typos, grammatical errors
    - Check if title contradicts comments (e.g., approach changed)
@@ -234,11 +240,15 @@ Then for each ticket:
      - Error states and validation needs
      - Connections to related functionality
    - Link to Notion spec in References if used
+   - **Add confidence banner at top if Low or Medium confidence:**
+     - Low: `> AI Generated (Low confidence): Requires validation - no spec or comments found`
+     - Medium: `> AI Generated: Verify details before implementation`
+     - High: No banner needed
 
 **4. Review and apply:**
    - If title needs change, show both title and description:
      ```
-     REN-XXX
+     REN-XXX [Confidence: Low/Medium/High]
 
      Title (suggested change):
        OLD: "Original title with issues..."
@@ -250,9 +260,11 @@ Then for each ticket:
      Push to Linear? (y/n/edit)
      ```
    - If title is fine, show description only
-   - If yes, update via `linear_update_issue` (include title if changed)
-   - If new spec was used, add to TICKET_SCOPE.md Related Specs list
-   - Log to TICKET_SCOPE.md History: `**XXX-123** - Refined`
+   - If yes:
+     - Update description via `linear_update_issue` (include title if changed)
+     - Add `ai-refined` label to ticket (create label if doesn't exist)
+     - If new spec was used, add to TICKET_SCOPE.md Related Specs list
+   - Log to TICKET_SCOPE.md History: `**XXX-123** - Refined (confidence: X)`
 
 **5. Move to next ticket**
 
