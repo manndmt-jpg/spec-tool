@@ -72,24 +72,17 @@ npm install
 npm run build
 ```
 
-### 3. Add to Claude
-
-```bash
-claude mcp add spec-tool node /FULL/PATH/TO/spec-tool/mcp-server/dist/index.js \
-  -e "LINEAR_API_KEY=lin_api_xxx" \
-  -e "NOTION_API_KEY=ntn_xxx"
-```
-
-### 4. Install Command
+### 3. Install Command
 
 ```bash
 cp command/spec.md ~/.claude/commands/
 ```
 
-### 5. Create Config
+### 4. Create Config Folder
 
-Create a folder with `config.json`:
+Create a folder for your project with these files:
 
+**config.json:**
 ```json
 {
   "linearTeamId": "your-linear-team-id",
@@ -98,35 +91,50 @@ Create a folder with `config.json`:
 }
 ```
 
-### 6. Restart Claude Code
+**.mcp.json** (for persistent MCP server config):
+```json
+{
+  "mcpServers": {
+    "spec-tool": {
+      "command": "node",
+      "args": ["/FULL/PATH/TO/spec-tool/mcp-server/dist/index.js"],
+      "env": {
+        "LINEAR_API_KEY": "lin_api_xxx",
+        "NOTION_API_KEY": "ntn_xxx"
+      }
+    }
+  }
+}
+```
 
-Run `/spec` from your config folder.
+### 5. Restart Claude Code
+
+When you `cd` into your config folder, Claude will prompt you to approve the MCP server. Run `/spec` to start.
 
 ---
 
 ## Team Setup
 
-**For teammates joining an existing team** (faster path):
+**For teammates joining an existing team:**
 
 ```bash
 # 1. Clone the public tool
 git clone https://github.com/YOUR_ORG/spec-tool
 cd spec-tool/mcp-server && npm install && npm run build
 
-# 2. Add MCP server to Claude (get API keys from team lead)
-claude mcp add spec-tool node $(pwd)/dist/index.js \
-  -e "LINEAR_API_KEY=xxx" \
-  -e "NOTION_API_KEY=xxx"
-
-# 3. Install command
+# 2. Install command
 cp ../command/spec.md ~/.claude/commands/
 
-# 4. Clone your team's config repo
+# 3. Clone your team's config repo
 cd ~
 git clone https://github.com/YOUR_ORG/your-team-config
+cd your-team-config
+
+# 4. Create .mcp.json from template
+cp .mcp.json.example .mcp.json
+# Edit .mcp.json with your API keys
 
 # 5. Restart Claude Code, then:
-cd your-team-config
 /spec
 ```
 
@@ -139,8 +147,17 @@ For teams, create a **private repo** with your config:
 ```
 your-team-config/
 ├── config.json         # Team's Linear/Notion IDs
+├── .mcp.json           # MCP server config (gitignored - contains keys)
+├── .mcp.json.example   # Template for teammates
+├── .gitignore          # Ignores .mcp.json
 ├── TICKET_SCOPE.md     # Shared history (created by /spec)
 └── README.md           # Team setup notes
+```
+
+**.gitignore should contain:**
+```
+.mcp.json
+.env
 ```
 
 Teammates clone this repo and run `/spec` from there. Commit `TICKET_SCOPE.md` to share context.
