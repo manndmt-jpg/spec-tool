@@ -194,7 +194,13 @@ Then for each ticket:
      - Does spec topic match ticket scope?
      - If unclear, ask: "Found spec [X] - use for context? (y/n)"
 
-**2. Draft new description using selected style:**
+**2. Analyze title for issues:**
+   - Check for: typos, grammatical errors
+   - Check if title contradicts comments (e.g., approach changed)
+   - Check if title is unclear or misleading
+   - If issues found, draft a suggested new title
+
+**3. Draft new description using selected style:**
    - Use available context (TICKET_SCOPE, Notion spec, comments)
    - AI adds/infers where gaps exist:
      - Business context if not explicit (infer from title + project context)
@@ -204,13 +210,26 @@ Then for each ticket:
      - Connections to related functionality
    - Link to Notion spec in References if used
 
-**3. Review and apply:**
-   - Show draft to user, ask "Push to Linear? (y/n/edit)"
-   - If yes, update via `linear_update_issue`
+**4. Review and apply:**
+   - If title needs change, show both title and description:
+     ```
+     REN-XXX
+
+     Title (suggested change):
+       OLD: "Original title with issues..."
+       NEW: "Improved clear title"
+
+     Description:
+       [Context/Specs/AC draft]
+
+     Push to Linear? (y/n/edit)
+     ```
+   - If title is fine, show description only
+   - If yes, update via `linear_update_issue` (include title if changed)
    - If new spec was used, add to TICKET_SCOPE.md Related Specs list
    - Log to TICKET_SCOPE.md History: `**XXX-123** - Refined`
 
-**4. Move to next ticket**
+**5. Move to next ticket**
 
 ---
 
