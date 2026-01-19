@@ -263,6 +263,7 @@ Then for each ticket:
    - If yes:
      - Update description via `linear_update_issue` (include title if changed)
      - Add `ai-refined` label to ticket (create label if doesn't exist)
+     - If Low confidence, also add `needs-review` label
      - If new spec was used, add to TICKET_SCOPE.md Related Specs list
    - Log to TICKET_SCOPE.md History: `**XXX-123** - Refined (confidence: X)`
 
