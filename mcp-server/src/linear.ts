@@ -14,13 +14,31 @@ export function registerLinearTools(server: McpServer) {
     {
       teamId: z.string().describe("Team ID (UUID format)"),
       first: z.number().optional().default(50).describe("Number of issues to fetch"),
-      status: z.string().optional().describe("Filter by status name"),
+      status: z.string().optional().describe("Filter by status name (e.g., 'Todo', 'In Progress')"),
+      statuses: z.array(z.string()).optional().describe("Filter by multiple status names"),
+      assignee: z.string().optional().describe("Filter by assignee display name"),
     },
-    async ({ teamId, first, status }) => {
+    async ({ teamId, first, status, statuses, assignee }) => {
       const team = await client.team(teamId);
+
+      // Build filter
+      const filter: Record<string, unknown> = {};
+
+      // Status filter (single or multiple)
+      if (statuses && statuses.length > 0) {
+        filter.state = { name: { in: statuses } };
+      } else if (status) {
+        filter.state = { name: { eq: status } };
+      }
+
+      // Assignee filter by display name
+      if (assignee) {
+        filter.assignee = { displayName: { containsIgnoreCase: assignee } };
+      }
+
       const issues = await team.issues({
         first,
-        filter: status ? { state: { name: { eq: status } } } : undefined,
+        filter: Object.keys(filter).length > 0 ? filter : undefined,
         orderBy: LinearDocument.PaginationOrderBy.UpdatedAt,
       });
 
@@ -33,6 +51,7 @@ export function registerLinearTools(server: McpServer) {
           priority: issue.priority,
           priorityLabel: issue.priorityLabel,
           estimate: issue.estimate,
+          assignee: (await issue.assignee)?.displayName,
         }))
       );
 
@@ -127,6 +146,28 @@ export function registerLinearTools(server: McpServer) {
 
       return {
         content: [{ type: "text", text: `Updated issue ${issue.identifier}` }],
+      };
+    }
+  );
+
+  // Add comment to issue
+  server.tool(
+    "linear_add_comment",
+    "Add a comment to a Linear issue",
+    {
+      issueId: z.string().describe("Issue ID (UUID format)"),
+      body: z.string().describe("Comment body (markdown supported)"),
+    },
+    async ({ issueId, body }) => {
+      await client.createComment({
+        issueId,
+        body,
+      });
+
+      const issue = await client.issue(issueId);
+
+      return {
+        content: [{ type: "text", text: `Added comment to ${issue.identifier}` }],
       };
     }
   );

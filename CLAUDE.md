@@ -40,9 +40,10 @@ spec-tool/
 
 | Tool | Description |
 |------|-------------|
-| `linear_list_issues` | List issues from a team |
+| `linear_list_issues` | List issues (filters: status, statuses[], assignee) |
 | `linear_get_issue` | Get issue with comments |
 | `linear_update_issue` | Update description/priority/estimate |
+| `linear_add_comment` | Add comment to issue |
 | `notion_get_page` | Get Notion page content |
 
 ## API Keys

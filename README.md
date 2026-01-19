@@ -30,6 +30,7 @@ Work on:
 | **Review** | View a ticket with comments, update description/priority/estimate. |
 | **Validate** | Compare a ticket against its Notion spec. Find gaps, missing requirements, suggested acceptance criteria. |
 | **Status** | Overview of all tickets by state (In Progress, Testing, Todo, Backlog). |
+| **Summarize** | Add AI-generated summary comment to tickets. Filter by assignee, status, or label. Links to relevant Notion specs. |
 
 ### Specs Menu
 
@@ -181,9 +182,10 @@ Refined tickets follow this structure:
 
 | Tool | Description |
 |------|-------------|
-| `linear_list_issues` | List issues from a team |
+| `linear_list_issues` | List issues (filters: status, statuses[], assignee) |
 | `linear_get_issue` | Get issue with full details and comments |
 | `linear_update_issue` | Update description, priority, or estimate |
+| `linear_add_comment` | Add comment to an issue |
 | `notion_get_page` | Get Notion page content |
 
 ---

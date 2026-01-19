@@ -115,6 +115,7 @@ Ticket Actions:
 2. Review - View/edit a specific ticket
 3. Validate - Compare ticket to Notion spec
 4. Status - List tickets by state
+5. Summarize - Add AI summary comment to tickets
 ```
 
 ---
@@ -255,6 +256,61 @@ Backlog (N)
 
 ---
 
+## Tickets > Summarize
+
+Add AI-generated summary comments to tickets. Useful for giving context to assignees.
+
+Ask: "Which tickets to summarize?"
+- a) Specific ticket ID (e.g., REN-123)
+- b) By assignee (e.g., yegor-ext)
+- c) By status (e.g., Todo, In Progress)
+- d) By label
+
+If option b, c, or d selected, also ask: "Filter by status?" with options:
+- Todo only
+- In Progress only
+- Both Todo and In Progress
+- All statuses
+
+Then fetch matching tickets via `linear_list_issues` with appropriate filters.
+
+**For each ticket:**
+
+1. Fetch full ticket via `linear_get_issue`
+2. Check if ticket already has an "AI Summary" comment - if so, skip (or ask to update)
+3. Analyze:
+   - Title and description
+   - All comments for context
+   - Check if description already has Context/Specs/AC sections (well-structured = less summary needed)
+4. If `notionDatabaseId` configured, search for matching spec by keywords from title
+5. Generate summary comment:
+
+```markdown
+**AI Summary**
+
+**What:** [1-2 sentence summary of what this ticket is about]
+
+**Why:** [Context/business reason if apparent, or "Not specified"]
+
+**Spec:** [Link to Notion spec if found, or "No matching spec"]
+
+**Key points from comments:**
+- [Relevant point 1]
+- [Relevant point 2]
+(or "No comments yet")
+```
+
+6. Show draft to user: "Add this comment to {TICKET-ID}? (y/n/edit/skip)"
+7. If yes, post via `linear_add_comment`
+8. Log to TICKET_SCOPE.md: `**REN-XXX** - Summarized`
+9. Move to next ticket (or finish if single ticket)
+
+**Skip criteria:**
+- Ticket already has "AI Summary" comment (unless user chooses to update)
+- Ticket has well-structured description with Context, Specifications, and Acceptance Criteria sections
+
+---
+
 # SPECS
 
 If user selects **Specs**, show:
@@ -364,7 +420,11 @@ Analyze coverage:
 
 **Linear:**
 - Team ID: from `config.json` → `linearTeamId`
-- MCP tools: `linear_list_issues`, `linear_get_issue`, `linear_update_issue`
+- MCP tools:
+  - `linear_list_issues` - List issues (filters: status, statuses[], assignee)
+  - `linear_get_issue` - Get issue with comments
+  - `linear_update_issue` - Update description/priority/estimate
+  - `linear_add_comment` - Add comment to issue
 
 **Notion:**
 - Product specs DB: from `config.json` → `notionDatabaseId`
