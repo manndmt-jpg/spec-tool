@@ -1,5 +1,6 @@
 {
   "linearTeamId": "your-linear-team-id",
+  "workspaceSlug": "your-linear-workspace-slug",
   "notionDatabaseId": "your-notion-database-id",
   "teamName": "Your Team Name"
 }
