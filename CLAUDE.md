@@ -2,83 +2,69 @@
 
 ## Project Overview
 
-MCP server and Claude command for managing Linear tickets and validating against Notion specs.
+Claude Code skill (`/spec`) and slash command (`/sync`) for managing Linear tickets and Notion specs. The skill carries opinionated conventions for ticket structure, refinement workflow, and spec page writing. Calls tools on the user's installed Linear and Notion MCP connectors — no custom MCP server lives in this repo.
 
 ## Quick Start
 
 ```bash
-# Build MCP server
-cd mcp-server && npm install && npm run build
+# Install MCP connectors via Claude Code Settings → Connectors:
+#   - Linear (official connector)
+#   - Notion (e.g. Notion Connect)
 
-# Add to Claude (with API keys)
-claude mcp add spec-tool node /path/to/dist/index.js -e "LINEAR_API_KEY=xxx" -e "NOTION_API_KEY=xxx"
+# Install skill + command
+cp -r skills/spec ~/.claude/skills/      # /spec — ticket & spec management
+cp commands/sync.md ~/.claude/commands/  # /sync — wrap-up docs
 
-# Install command
-cp command/spec.md ~/.claude/commands/
+# Set up your workspace
+cp config.example.json /your-team-folder/config.json
+# Fill in linearTeamId, workspaceSlug, notionDatabaseId, teamName
 
 # Use
-cd your-config-folder
+cd your-team-folder
 /spec
 ```
+
+**Note:** Source files live in this repo. Claude Code reads from `~/.claude/skills/spec/` and `~/.claude/commands/`. After editing the repo, re-run the install copy commands.
 
 ## Project Structure
 
 ```
 spec-tool/
-├── command/spec.md       # The /spec command prompt
-├── config.example.json   # Config template
-└── mcp-server/
-    ├── src/
-    │   ├── index.ts      # MCP server entry
-    │   ├── linear.ts     # Linear API tools
-    │   └── notion.ts     # Notion API tools
-    ├── .env              # API keys (git-ignored)
-    └── dist/             # Built output
+├── skills/
+│   └── spec/                 # /spec skill (directory)
+│       ├── SKILL.md          # Entry point + interactive setup + prerequisites
+│       ├── ticket-conventions.md
+│       ├── ticket-workflows.md
+│       ├── page-conventions.md
+│       └── spec-workflows.md
+├── commands/
+│   └── sync.md               # /sync — wrap-up docs command
+├── config.example.json       # Config template (per-team)
+├── CLAUDE.md                 # This file
+└── README.md                 # Public-facing setup docs
 ```
 
-## MCP Tools
+## Connectors
 
-| Tool | Description |
-|------|-------------|
-| `linear_list_issues` | List issues (filters: status, statuses[], assignee) |
-| `linear_get_issue` | Get issue with comments |
-| `linear_update_issue` | Update description/priority/estimate |
-| `linear_add_comment` | Add comment to issue |
-| `notion_get_page` | Get Notion page content |
+The `/spec` skill expects two MCP connectors installed in Claude Code:
 
-## API Keys
+- **Linear connector** — function names referenced throughout: `list_issues`, `get_issue`, `list_comments`, `save_issue`, `save_comment`, `list_milestones`, `save_milestone`, `list_projects`, `save_project`, `list_initiatives`.
+- **Notion connector** — function names referenced: `notion-fetch`, `notion-search`, `notion-update-page` / `update_content`.
 
-- **Linear**: Settings > Account > Security & Access
-- **Notion**: notion.so/my-integrations (must share pages with integration)
+Exact tool IDs (including any prefix) vary by connector vendor. The skill uses the function-name suffix and assumes the user's installed connector exposes them.
 
 ## Ticket Format
 
-All Linear tickets should follow this structure:
+Refined tickets follow this section order (full rules in [skills/spec/ticket-conventions.md](skills/spec/ticket-conventions.md)):
 
-```markdown
-## Context
-[Why this ticket exists]
-
-## Specifications
-1. [What needs to be done]
-
-## Acceptance Criteria
-- [ ] [How we know it's done]
-
----
-**References**: [Links to specs, docs]
-```
-
-## Development
-
-```bash
-cd mcp-server
-npm run dev    # Watch mode
-npm run build  # Build
-```
+1. **Story** (User / Improvement / Problem)
+2. **Business Context** — business facts only, no implementation
+3. **Product / Feature Specifications** — concrete behavior
+4. **Implementation Pointers** — codebase entry points
+5. **Acceptance Criteria** — outcome-focused checklist
 
 ## Conventions
 
 - Always fetch comments when getting a ticket (contain important context)
-- Config (team ID, database ID) comes from config.json in working directory
-- TICKET_SCOPE.md tracks project context + history per working directory
+- Config (team ID, workspace slug, database ID) comes from `config.json` in working directory
+- Per-team conventions live in the team's own repo / project CLAUDE.md — this repo only carries generic conventions
