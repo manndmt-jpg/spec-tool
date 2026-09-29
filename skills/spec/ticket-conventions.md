@@ -99,23 +99,38 @@ Parent epics group sub-tickets into a coherent body of work and track overall pr
 - **References** should link to the relevant spec, testing strategy, and parent ticket
 
 ### Reporting
-- Create **one bug ticket** for all findings from a test ticket
-- After testing is complete, review the bug ticket together and decide whether to split into separate issues
-- Each finding should include: what you did, what happened, what you expected (and where that expectation comes from), and a link to the source session/log (chat transcript, call recording, agent trace, etc.)
+The test ticket's "How to Report Findings" section carries these instructions, addressed to the tester:
+- Don't create tickets for what you find — report each finding as a comment on this ticket, as you go, in the order you find things.
+- A good format for an agent finding: **Customer asks:** … **Agent says:** … **Correct is:** … **Link:** the source conversation (chat transcript, call recording, agent trace).
+- A good format for a UI finding: what you did, what happened, what you expected (and where that expectation comes from), and a link or screenshot as evidence.
 
 ## Bug Tickets
 
-### Structure
+Every defect report is a bug ticket. Two formats, by what was found:
+
+### Single UI or tech finding
 - **BUG: prefix** on ticket titles for visibility
 - Use the **Bug Report** template in Linear (Summary, Root Cause & Possible Fixes, Expected Behavior)
 - **Section order**: Summary → Root Cause & Possible Fixes → Expected Behavior
 - **No backlog item story** — bugs don't need a user story, improvement story, or problem story
 - Template auto-applies the `Bug` label
 
-### Sections
+Sections:
 - **Summary** — observed behavior, environment, screenshots/logs
 - **Root Cause & Possible Fixes** — what's causing it (if known) and rough ideas for fixing. Can be expanded after investigation.
 - **Expected Behavior** — checklist of what works correctly after the fix (replaces Acceptance Criteria)
+
+### Agent findings
+For a batch of agent findings — picking up the comments testers left on a test ticket, or findings the user describes directly:
+- **BUG: prefix** on the title. Create from the **Bug Report** template so the `Bug` label applies, then replace the template body with the findings list.
+- **One ticket per receiver** — split the findings by who will fix them, so each developer works through a single list. Never one shared ticket that every reader has to filter for their part.
+- **The body is the sorted findings list** — no backlog item story, no standard section skeleton.
+- **Sort by severity** — three blocks in fixed order: **Crucial**, **Important**, **Less important**.
+- **Fixed form per finding** — normalize each into the same four lines, whatever shape it was reported in:
+  - **Customer asks:** the customer's message or question
+  - **Agent says:** what the agent actually answered
+  - **Correct is:** the correct behavior, and where that expectation comes from (spec, KB, rule)
+  - **Link:** the source conversation (chat transcript, call recording, agent trace)
 
 ## Organization
 - **Linear Projects** for feature collections (not parent issues). One project per version/scope (e.g., "Voice Channel v1", "Sales Agent v2", "Authentication setup v1"). Issues are standalone within a project.
