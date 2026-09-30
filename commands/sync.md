@@ -14,7 +14,7 @@ Update all project documentation before we wrap up:
 Read the current file first. **Make targeted Edits, not a full Write** — most of the file (todos, Backlog, Notes, older session summaries) is unchanged on a typical sync. Use Edit for:
 - Insert new todos at the top of `## To Do List` (if any)
 - Insert the new session summary at the top of `## Session Summaries`
-- Drop the oldest displayed session summary if more than 3 are now shown
+- Drop the oldest displayed session summary if more than 3 are now shown — but **never drop one before it exists in SESSION_HISTORY.md.** Grep the history for that session number first (`grep -n "Session <N>" SESSION_HISTORY.md`); if it is missing, archive it in step 4 first, then delete it here. Deleting an unarchived summary loses it permanently — SCRATCHPAD and SESSION_HISTORY are the only two copies. Do not infer presence from a date-filtered grep: match on the session number, since date formats vary (`2026-09-17 – 24`, `2026-09-04 + 2026-09-30`).
 
 A full Write is fine if the file is heavily restructured, but it's the slower path — prefer Edit.
 
@@ -77,6 +77,7 @@ Show me a summary of what you updated in each file.
 
 ## 4. SESSION_HISTORY.md
 Read the current file first (Read tool with `offset` — the file is long, you only need the tail), then create a compact version of the current session summary from SCRATCHPAD.md (max 15 lines). Append it at the bottom of the file **with the Edit tool** (anchor on the last entry's closing lines) — never with a shell append.
+- **This step covers every session still unarchived, not just the current one.** Before finishing, check that each session summary in SCRATCHPAD has an entry here (by session number). A parallel session that wrote its SCRATCHPAD summary but skipped this step leaves a gap — write the missing entry from its SCRATCHPAD summary and insert it in number order, not at the end. (Seen 2026-09-30.)
 - Entries are in chronological order (oldest at top, newest at bottom). New sessions always go at the end.
 - No open checkboxes. Only what was done. If things were left open, write it down, but we don't use this to track. 
 - Point of this document is only to have a history we can search, if needed. This could be for questions like, "when did we decide xy" or "remember when we talked about xy" Usually this file goes ignored. 
